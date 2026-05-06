@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # CẤU HÌNH MONGODB
+  mongodb:
+    image: mongo:7.0
+    container_name: ecommerce_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      # Mount file setup.js để tự động chạy
+      - ./mongo/setup.js:/docker-entrypoint-initdb.d/setup.js
+      - mongo_ecommerce_data:/data/db
+
+  # CẤU HÌNH ORACLE DATABASE
+  oracle:
+    image: gvenzl/oracle-free:latest
+    container_name: ecommerce_oracle
+    restart: unless-stopped
+    ports:
+      - "1521:1521"
+    environment:
+      - ORACLE_PASSWORD=SysPassword123  # Mật khẩu cho SYS và SYSTEM
+    volumes:
+      # Mount file setup.sql để tự động chạy
+      - ./oracle/setup.sql:/container-entrypoint-initdb.d/setup.sql
+      - oracle_ecommerce_data:/opt/oracle/oradata
+
+volumes:
+  mongo_ecommerce_data:
+  oracle_ecommerce_data:
