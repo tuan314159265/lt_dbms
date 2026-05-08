@@ -1,0 +1,51 @@
+services:
+  # Oracle Database 21c XE
+  # oracle-db:
+  #   image: gvenzl/oracle-xe:21-slim
+  #   container_name: cinema-oracle-db
+  #   environment:
+  #     ORACLE_PASSWORD: dev123
+  #     ORACLE_ALLOW_REMOTE: true
+  #   ports:
+  #     - "1521:1521"
+  #   volumes:
+  #     - oracle_data:/opt/oracle/oradata
+  #     - ./sql:/docker-entrypoint-initdb.d
+  #   healthcheck:
+  #     test: ["CMD", "sqlplus", "-L", "dev/dev123@localhost:1521/XEPDB1", "as", "sysdba"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+  #     start_period: 60s
+
+  # MongoDB 7.0 (Transaction Demo)
+  mongodb:
+    image: mongo:7.0
+    container_name: temp-mongodb
+    environment:
+      MONGO_INITDB_DATABASE: cinema_db
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts:/scripts
+      - ./mongodb:/mongodb
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: mongod --replSet rs0
+    networks:
+      - cinema-network
+
+volumes:
+  # oracle_data:
+  #   driver: local
+  mongodb_data:
+    driver: local
+
+networks:
+  cinema-network:
+    driver: bridge
