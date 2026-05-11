@@ -8,10 +8,21 @@ services:
     restart: unless-stopped
     ports:
       - "27017:27017"
+    environment:
+      # Tùy chọn: Thêm user/pass root để bảo mật hơn, dù chạy local
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: AdminPassword123
     volumes:
-      # Mount file setup.js để tự động chạy
-      - ./mongo/setup.js:/docker-entrypoint-initdb.d/setup.js
+      # Tối ưu: Mount toàn bộ thư mục chứa các file .js thay vì 1 file duy nhất
+      - ./mongo/init-scripts:/docker-entrypoint-initdb.d
       - mongo_ecommerce_data:/data/db
+    networks:
+      - ecommerce_network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # CẤU HÌNH ORACLE DATABASE
   oracle:
@@ -21,11 +32,25 @@ services:
     ports:
       - "1521:1521"
     environment:
-      - ORACLE_PASSWORD=SysPassword123  # Mật khẩu cho SYS và SYSTEM
+      ORACLE_PASSWORD: SysPassword123
+      APP_USER: dev
+      APP_USER_PASSWORD: dev123    # ← đổi APP_PASSWORD → APP_USER_PASSWORD
     volumes:
-      # Mount file setup.sql để tự động chạy
-      - ./oracle/setup.sql:/container-entrypoint-initdb.d/setup.sql
+      # Tối ưu: Mount thư mục để Oracle tự động chạy tuần tự 01_..., 02_...
+      - ./oracle/init-scripts:/container-entrypoint-initdb.d
       - oracle_ecommerce_data:/opt/oracle/oradata
+    networks:
+      - ecommerce_network
+    healthcheck:
+      # Image gvenzl có sẵn script healthcheck.sh rất tiện lợi
+      test: ["CMD", "healthcheck.sh"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+networks:
+  ecommerce_network:
+    driver: bridge
 
 volumes:
   mongo_ecommerce_data:
