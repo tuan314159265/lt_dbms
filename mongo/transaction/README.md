@@ -73,13 +73,12 @@ docker exec temp-mongodb mongosh --quiet --eval "db.isMaster().ismaster"
 Chạy từng lệnh một, kiểm tra "Successfully copied" sau mỗi lệnh:
 
 ```powershell
-docker cp scripts\01-init-collections.js temp-mongodb:/01-init-collections.js
-```
-```
-docker cp scripts\02-sample-data.js temp-mongodb:/02-sample-data.js
-```
-```powershell
-docker cp scripts\03-transaction-demo.js temp-mongodb:/03-transaction-demo.js
+docker cp scripts\01-init-collections.js temp-mongodb:/01-init-collections.js ; 
+docker cp scripts\02-sample-data-complete.js temp-mongodb:/02-sample-data-complete.js ;
+docker cp scripts\03-transaction-demo-3a.js temp-mongodb:/03-transaction-demo-3a.js ; 
+docker cp scripts\03-transaction-demo-3b.js temp-mongodb:/03-transaction-demo-3b.js ; 
+docker cp scripts\03-transaction-demo-3c.js temp-mongodb:/03-transaction-demo-3c.js ; 
+docker cp scripts\03-transaction-demo-3d.js temp-mongodb:/03-transaction-demo-3d.js
 ```
 
 docker cp scripts\01-init-collections.js temp-mongodb:/01-init-collections.js ; docker cp scripts\02-sample-data.js temp-mongodb:/02-sample-data.js ; docker cp scripts\03-transaction-demo.js temp-mongodb:/03-transaction-demo.js
@@ -87,8 +86,11 @@ docker cp scripts\01-init-collections.js temp-mongodb:/01-init-collections.js ; 
 ⚠️ Nếu báo lỗi "file not found", thử:
 ```powershell
 docker cp scripts/01-init-collections.js temp-mongodb:/01-init-collections.js
-docker cp scripts/02-sample-data.js temp-mongodb:/02-sample-data.js
-docker cp scripts/03-transaction-demo.js temp-mongodb:/03-transaction-demo.js
+docker cp scripts/02-sample-data-complete.js temp-mongodb:/02-sample-data-complete.js
+docker cp scripts/03-transaction-demo-3a.js temp-mongodb:/03-transaction-demo-3a.js
+docker cp scripts/03-transaction-demo-3b.js temp-mongodb:/03-transaction-demo-3b.js
+docker cp scripts/03-transaction-demo-3c.js temp-mongodb:/03-transaction-demo-3c.js
+docker cp scripts/03-transaction-demo-3d.js temp-mongodb:/03-transaction-demo-3d.js
 ```
 
 ---
@@ -109,7 +111,7 @@ Kết quả mong đợi:
 ## 📝 BƯỚC 7: Insert dữ liệu mẫu
 
 ```powershell
-docker exec temp-mongodb mongosh cinema_db /02-sample-data.js
+docker exec temp-mongodb mongosh cinema_db /02-sample-data-complete.js
 ```
 
 Kết quả mong đợi:
@@ -125,7 +127,10 @@ Kết quả mong đợi:
 ## 🎬 BƯỚC 8: Chạy Demo Transaction
 
 ```powershell
-docker exec temp-mongodb mongosh cinema_db /03-transaction-demo.js
+docker exec temp-mongodb mongosh cinema_db /03-transaction-demo-3a.js
+docker exec temp-mongodb mongosh cinema_db /03-transaction-demo-3b.js
+docker exec temp-mongodb mongosh cinema_db /03-transaction-demo-3c.js
+docker exec temp-mongodb mongosh cinema_db /03-transaction-demo-3d.js
 ```
 
 Kết quả mong đợi:
